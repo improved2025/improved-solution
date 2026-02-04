@@ -1,10 +1,13 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { fadeUp } from "@/lib/motion";
 
 const easeOut: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+// Use the clean Gumroad URL (no tracking params)
+const GUMROAD_LINK = "https://jefinno.gumroad.com/l/nijoo";
 
 function SlidingBG({
   img,
@@ -50,51 +53,34 @@ type Product = {
   title: string;
   subtitle: string;
   desc: string;
-  format: string; // e.g. PDF, ePub, Bundle
-  price?: string; // optional until you decide
-  cover?: string; // /images/products/...
+  format: string;
+  priceLabel: string;
+  cover: string;
   bullets: string[];
+  gumroadUrl: string;
 };
 
 export default function ProductsClient() {
-  const products = useMemo<Product[]>(
-    () => [
-      {
-        id: "premium-ebook-1",
-        title: "Premium eBook Title",
-        subtitle: "A structured guide designed for real use",
-        desc: "Clear, practical content packaged professionally. Built for readers who want direction, not noise.",
-        format: "PDF",
-        price: "Coming soon",
-        cover: "", // add later: /images/products/cover-1.png
-        bullets: ["Clean layout", "Immediate takeaways", "Designed to be referenced"],
-      },
-      {
-        id: "resource-kit-1",
-        title: "Resource Kit",
-        subtitle: "Templates and frameworks you can reuse",
-        desc: "A focused bundle of tools and structure — useful the same day you download it.",
-        format: "Bundle",
-        price: "Coming soon",
-        cover: "",
-        bullets: ["Reusable templates", "Simple structure", "Professional formatting"],
-      },
-      {
-        id: "ebook-series-1",
-        title: "Series / Collection",
-        subtitle: "A set built around one clear outcome",
-        desc: "A cohesive collection with consistent design and a deliberate learning flow.",
-        format: "PDF + ePub",
-        price: "Coming soon",
-        cover: "",
-        bullets: ["Consistent visual system", "Clear progression", "Built for depth"],
-      },
+  // Update these fields to match your real eBook details
+  const product: Product = {
+    id: "nijoo",
+    title: "NIJOO",
+    subtitle: "A premium eBook, delivered instantly after purchase",
+    desc:
+      "A professionally packaged digital product designed for immediate value and long-term reference. Clean layout. Clear structure. No noise.",
+    format: "PDF",
+    priceLabel: "Paid download",
+    cover: "/images/products/bounce-cover.png", 
+    bullets: [
+      "Professionally formatted for easy reading",
+      "Designed for clarity and reuse",
+      "Instant download after payment",
+      "Secure delivery handled by Gumroad",
     ],
-    []
-  );
+    gumroadUrl: GUMROAD_LINK,
+  };
 
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const active = products.find((p) => p.id === activeId) || null;
+  const [open, setOpen] = useState(false);
 
   return (
     <main className="bg-black text-white">
@@ -109,16 +95,16 @@ export default function ProductsClient() {
           initial="hidden"
           animate="visible"
         >
-          <h1 className="text-4xl md:text-5xl font-semibold mb-6">eBooks & Digital Products</h1>
+          <h1 className="text-4xl md:text-5xl font-semibold mb-6">eBooks</h1>
           <p className="text-white/80 max-w-3xl leading-relaxed">
-            Professional digital products designed for immediate value and long-term use.
-            Packaged with clarity, structure, and premium presentation.
+            Digital products built with structure and premium presentation. Purchase securely and
+            download instantly.
           </p>
           <div className="mt-8 h-px w-20 bg-[#C9A24A]/80" />
         </motion.div>
       </section>
 
-      {/* PRODUCTS GRID */}
+      {/* PRODUCT */}
       <section className="relative px-6 py-24 overflow-hidden">
         <SlidingBG img="/images/services/service-main-background.png" duration={18} range={7} />
         <div className="absolute inset-0 bg-black/75" />
@@ -132,61 +118,106 @@ export default function ProductsClient() {
         >
           <div className="flex items-end justify-between gap-6 mb-10">
             <div>
-              <h2 className="text-3xl font-semibold mb-2">Available soon</h2>
-              <p className="text-white/60">
-                This section is built to scale. Add covers, prices, and checkout when ready.
-              </p>
+              <h2 className="text-3xl font-semibold mb-2">Available now</h2>
+              <p className="text-white/60">One product live. We’ll expand this library next.</p>
             </div>
-
-            <a
-              href="/quote"
-              className="hidden sm:inline-flex rounded-full bg-[#C9A24A] px-6 py-2.5 text-black font-medium hover:bg-[#E6C46A] transition"
-            >
-              Request a Quote
-            </a>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((p) => (
-              <motion.button
-                key={p.id}
-                type="button"
-                onClick={() => setActiveId(p.id)}
-                className="group text-left rounded-2xl border border-white/10 bg-black/35 p-7 hover:border-white/25 transition focus:outline-none focus:ring-2 focus:ring-[#C9A24A]/60"
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            {/* COVER */}
+            <div className="lg:col-span-5">
+              <motion.div
+                className="relative rounded-2xl overflow-hidden border border-white/10"
                 whileHover={{ y: -6 }}
                 transition={{ duration: 0.28, ease: easeOut }}
               >
-                <div className="text-xs text-white/55 mb-2">{p.format}</div>
-                <div className="flex items-start justify-between gap-6">
-                  <div>
-                    <h3 className="text-xl font-medium mb-1">{p.title}</h3>
-                    <p className="text-white/65 text-sm mb-4">{p.subtitle}</p>
+                <motion.div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: `url('${product.cover}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    willChange: "transform",
+                  }}
+                  animate={{ scale: [1.02, 1.06, 1.02] }}
+                  transition={{ duration: 9, ease: "easeInOut", repeat: Infinity }}
+                />
+                <div className="absolute inset-0 bg-black/55" />
+                <div className="relative z-10 p-10 min-h-[360px] flex flex-col justify-end">
+                  <div className="text-xs text-white/60 mb-2">
+                    {product.format} • {product.priceLabel}
                   </div>
-                  <span className="text-white/35 group-hover:text-white/80 transition">→</span>
+                  <div className="text-2xl font-semibold">{product.title}</div>
+                  <div className="text-white/70 mt-2">{product.subtitle}</div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* DETAILS */}
+            <div className="lg:col-span-7">
+              <div className="rounded-2xl border border-white/10 bg-black/35 p-10">
+                <div className="text-xs text-white/60 uppercase tracking-wide mb-3">
+                  What you get
                 </div>
 
-                <p className="text-white/75 text-sm leading-relaxed mb-5">{p.desc}</p>
+                <p className="text-white/80 leading-relaxed mb-8">{product.desc}</p>
 
-                <div className="space-y-2">
-                  {p.bullets.slice(0, 3).map((b) => (
-                    <div key={b} className="text-sm text-white/65">
-                      • {b}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+                  {product.bullets.map((b) => (
+                    <div
+                      key={b}
+                      className="rounded-xl border border-white/10 bg-black/35 p-5 text-white/75"
+                    >
+                      {b}
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-6 text-sm text-white/55">
-                  {p.price ? p.price : "—"}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <a
+                    href={product.gumroadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative inline-flex justify-center items-center rounded-full bg-[#C9A24A] px-8 py-3 text-black font-medium overflow-hidden hover:bg-[#E6C46A] transition"
+                  >
+                    <span className="relative z-10">Buy eBook</span>
+                    <motion.span
+                      aria-hidden
+                      className="absolute top-0 bottom-0 w-24 bg-white/25 blur-sm"
+                      initial={{ x: "-140%" }}
+                      animate={{ x: "240%" }}
+                      transition={{
+                        duration: 3.6,
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                        repeatDelay: 1.2,
+                      }}
+                      style={{ transform: "skewX(-20deg)" }}
+                    />
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => setOpen(true)}
+                    className="inline-flex justify-center items-center rounded-full border border-white/20 px-8 py-3 text-white hover:border-white/40 transition"
+                  >
+                    Preview details
+                  </button>
                 </div>
-              </motion.button>
-            ))}
+
+                <div className="mt-6 text-sm text-white/50">
+                  Checkout and delivery are securely handled by Gumroad.
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
       </section>
 
-      {/* DETAILS MODAL */}
+      {/* MODAL (Preview details) */}
       <AnimatePresence>
-        {active && (
+        {open && (
           <motion.div
             className="fixed inset-0 z-50"
             initial={{ opacity: 0 }}
@@ -197,7 +228,7 @@ export default function ProductsClient() {
               type="button"
               aria-label="Close"
               className="absolute inset-0 bg-black/80"
-              onClick={() => setActiveId(null)}
+              onClick={() => setOpen(false)}
             />
 
             <motion.div
@@ -209,22 +240,27 @@ export default function ProductsClient() {
               <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/45">
                 <button
                   type="button"
-                  onClick={() => setActiveId(null)}
+                  onClick={() => setOpen(false)}
                   className="absolute right-4 top-4 z-10 rounded-full border border-white/15 bg-black/40 px-3 py-2 text-white/80 hover:text-white hover:border-white/30 transition"
                 >
                   ✕
                 </button>
 
                 <div className="p-10">
-                  <div className="text-xs text-white/55 mb-2">{active.format}</div>
-                  <h3 className="text-2xl md:text-3xl font-semibold mb-2">{active.title}</h3>
-                  <p className="text-white/70 mb-6">{active.subtitle}</p>
+                  <div className="text-xs text-white/55 mb-2">
+                    {product.format} • {product.priceLabel}
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-semibold mb-2">{product.title}</h3>
+                  <p className="text-white/70 mb-6">{product.subtitle}</p>
 
-                  <p className="text-white/80 leading-relaxed mb-8">{active.desc}</p>
+                  <p className="text-white/80 leading-relaxed mb-8">{product.desc}</p>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                    {active.bullets.map((b) => (
-                      <div key={b} className="rounded-xl border border-white/10 bg-black/35 p-5 text-white/75">
+                    {product.bullets.map((b) => (
+                      <div
+                        key={b}
+                        className="rounded-xl border border-white/10 bg-black/35 p-5 text-white/75"
+                      >
                         {b}
                       </div>
                     ))}
@@ -232,21 +268,24 @@ export default function ProductsClient() {
 
                   <div className="flex flex-col sm:flex-row gap-4">
                     <a
-                      href="/quote"
+                      href={product.gumroadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex justify-center items-center rounded-full bg-[#C9A24A] px-8 py-3 text-black font-medium hover:bg-[#E6C46A] transition"
                     >
-                      Request a Quote
+                      Buy on Gumroad
                     </a>
+
                     <a
-                      href="/services"
+                      href="/services#digital"
                       className="inline-flex justify-center items-center rounded-full border border-white/20 px-8 py-3 text-white hover:border-white/40 transition"
                     >
-                      Explore Services
+                      Digital Products Service
                     </a>
                   </div>
 
                   <div className="mt-6 text-xs text-white/45">
-                    This page is ready for Stripe/Gumroad checkout whenever you decide.
+                    Tip: Replace the placeholder cover path with your real eBook cover when ready.
                   </div>
                 </div>
               </div>
@@ -254,56 +293,6 @@ export default function ProductsClient() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* BOTTOM CTA */}
-      <motion.section
-        className="px-6 py-24 border-t border-white/10"
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.25 }}
-      >
-        <div className="max-w-5xl mx-auto">
-          <div className="rounded-2xl border border-white/10 bg-black/40 p-10">
-            <h3 className="text-3xl md:text-4xl font-semibold mb-4">
-              Want a digital product built professionally?
-            </h3>
-            <p className="text-white/70 leading-relaxed max-w-3xl mb-8">
-              If you’re packaging knowledge, training, or resources, we can design the product system,
-              layout, cover, and distribution assets so it feels premium and credible.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="/quote"
-                className="relative inline-flex justify-center items-center rounded-full bg-[#C9A24A] px-8 py-3 text-black font-medium overflow-hidden hover:bg-[#E6C46A] transition"
-              >
-                <span className="relative z-10">Request a Quote</span>
-                <motion.span
-                  aria-hidden
-                  className="absolute top-0 bottom-0 w-24 bg-white/25 blur-sm"
-                  initial={{ x: "-140%" }}
-                  animate={{ x: "240%" }}
-                  transition={{
-                    duration: 3.6,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                    repeatDelay: 1.2,
-                  }}
-                  style={{ transform: "skewX(-20deg)" }}
-                />
-              </a>
-
-              <a
-                href="/services#digital"
-                className="inline-flex justify-center items-center rounded-full border border-white/20 px-8 py-3 text-white hover:border-white/40 transition"
-              >
-                Digital Products Service
-              </a>
-            </div>
-          </div>
-        </div>
-      </motion.section>
     </main>
   );
 }
