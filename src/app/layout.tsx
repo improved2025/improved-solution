@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import SiteFooter from "@/components/SiteFooter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,16 +14,59 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Improved Solutions",
+  metadataBase: new URL("https://improved-solution.vercel.app"),
+  title: {
+    default: "Improved Solutions",
+    template: "%s — Improved Solutions",
+  },
   description:
-    "Publishing, branding, graphic design, websites/apps, and premium printing — built to make your work look serious.",
+    "Premium multidisciplinary studio delivering publishing, branding, graphic design, websites, applications, and premium printing with clarity and finished execution.",
+  applicationName: "Improved Solutions",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Improved Solutions",
+    title: "Improved Solutions",
+    description:
+      "Premium multidisciplinary studio delivering publishing, branding, graphic design, websites, applications, and premium printing with clarity and finished execution.",
+    url: "/",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Improved Solutions",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Improved Solutions",
+    description:
+      "Premium multidisciplinary studio delivering publishing, branding, graphic design, websites, applications, and premium printing with clarity and finished execution.",
+    images: ["/og.png"],
+  },
+  icons: {
+    icon: [{ url: "/favicon.ico" }],
+    apple: [{ url: "/apple-touch-icon.png" }],
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
@@ -30,6 +74,7 @@ export default function RootLayout({
         style={{ background: "#0b0f14", color: "#f5f7fa" }}
       >
         {children}
+        <SiteFooter />
       </body>
     </html>
   );
