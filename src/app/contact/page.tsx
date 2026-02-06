@@ -97,10 +97,10 @@ export default function ContactPage() {
             </p>
 
             <a
-              href="mailto:jefinno73@gmail.com"
+              href="mailto:contact@improvedsolution.com"
               className="inline-flex items-center rounded-full border border-white/20 px-6 py-3 text-white hover:border-white/40 transition"
             >
-              jefinno73@gmail.com
+              contact@improvedsolution.com
             </a>
 
             <div className="mt-4 text-sm text-white/45">
