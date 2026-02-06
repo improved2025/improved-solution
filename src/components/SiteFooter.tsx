@@ -39,9 +39,9 @@ export default function SiteFooter() {
               <div className="text-sm text-white/60 uppercase tracking-wide">Email</div>
               <a
                 className="text-white/75 hover:text-white transition"
-                href="mailto:jefinno73@gmail.com"
+                href="mailto:contact@improvedsolution.com"
               >
-                jefinno73@gmail.com
+                contact@improvedsolution.com
               </a>
               <div className="pt-3">
                 <motion.div
